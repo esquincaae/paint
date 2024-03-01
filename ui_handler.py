@@ -23,7 +23,7 @@ class UIHandler:
         self.current_tool = None
 
     def initialize_image(self, width, height):
-        """Inicializa una imagen en blanco."""
+        #Inicializa una imagen en blanco.
         image = np.zeros((height, width, 3), dtype=np.uint8)
         image.fill(255)
         return image
@@ -42,29 +42,22 @@ class UIHandler:
         erase_button.pack(side=tk.LEFT, fill=tk.Y, expand=True)
 
     def on_button_press(self, event):
-        """Delega a la función correspondiente según la herramienta activa."""
         if self.current_tool == 'line':
             self.on_button_press_line(event)
-        # Agrega condiciones similares para otras herramientas.
 
     def on_button_release(self, event):
-        """Delega a la función correspondiente según la herramienta activa."""
         if self.current_tool == 'line':
             self.on_button_release_line(event)
-        # Agrega condiciones similares para otras herramientas.
 
     def on_button_press_line(self, event):
-        """Acciones específicas al presionar el botón para dibujar una línea."""
         self.start_point = (event.x, event.y)
 
     def on_button_release_line(self, event):
-        """Acciones específicas al liberar el botón después de dibujar una línea."""
         self.end_point = (event.x, event.y)
         draw_line(self.image, self.start_point, self.end_point)
         self.update_canvas()
 
     def draw_polyline(self, event):
-        """Dibuja segmentos conectando el último punto con el actual."""
         current_point = (event.x, event.y)
         if self.last_point:
             draw_polyline(self.image, self.last_point, current_point)
@@ -72,8 +65,7 @@ class UIHandler:
         self.last_point = current_point
 
     def erase_area_event(self, event):
-        """Borra un área alrededor del punto donde se encuentra el cursor."""
-        eraser_size = 20  # Define el tamaño del borrador.
+        eraser_size = 20
         top_left = (event.x - eraser_size, event.y - eraser_size)
         bottom_right = (event.x + eraser_size, event.y + eraser_size)
         erase_area(self.image, top_left, bottom_right)
@@ -86,7 +78,6 @@ class UIHandler:
         self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
 
     def select_tool(self, tool):
-        """Selecciona la herramienta y actualiza los enlaces de eventos."""
         # Primero, desvincula todos los eventos para evitar conflictos.
         self.canvas.unbind("<ButtonPress-1>")
         self.canvas.unbind("<ButtonRelease-1>")
@@ -111,13 +102,11 @@ class UIHandler:
             self.canvas.bind("<B1-Motion>", self.erase_area_event)
 
     def on_button_press_polyline(self, event):
-        """Establece el punto de inicio para la polilínea."""
         if not self.start_point:
             self.start_point = (event.x, event.y)
         self.last_point = self.start_point
 
     def on_button_release_polyline(self, event):
-        """No es necesario definir acciones al soltar el botón para polilíneas."""
         pass
 
     def on_button_press_rectangle(self, event):
@@ -137,5 +126,4 @@ class UIHandler:
         self.update_canvas()
     
     def on_tools_window_close(self):
-        # Función para manejar el cierre de la ventana de herramientas.
         self.window.destroy()
